@@ -1,17 +1,35 @@
-const app = require("./src/app");
-const mongoose = require("mongoose");
-require("dotenv").config();
+const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
-// TODO: need to set up a server for our project
-// TODO: store this in a .env file
-const PORT = 0;
-const MONGO_URI = 0;
+console.log("hello world");
 
-// Connect to MongoDB
-mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("MongoDB Connected");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-  })
-  .catch((err) => console.error("MongoDB connection error:", err));
+// MongoDB connection URL and database name
+const url = process.env.MONGODB_URI;
+const dbName = process.env.DB_NAME;
+
+let client;
+let database;
+
+// Function to connect to MongoDB and export the client and database object
+const connectDB = async () => {
+    if (!client) {
+        try {
+            client = new MongoClient(url);
+            await client.connect();
+            console.log('Connected to MongoDB');
+            database = client.db(dbName);
+        } catch (err) {
+            console.error('Failed to connect to MongoDB', err);
+            process.exit(1);
+        }
+    }
+};
+
+// Export the client after the connection
+const getClient = () => client;
+const getDatabase = () => database;
+
+// Export the database name and client
+exports.getClient = getClient;
+exports.getDatabase = getDatabase;
+exports.connectDB = connectDB;

@@ -1,10 +1,37 @@
-const mongoose = require("mongoose");
+require('dotenv').config({ path: '../../.env' });
+const db = require('../../server');
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true, required: true },
-  password: { type: String, required: true },	// We'll need to change how we store this
-  walletAddress: String,			// and this too
-});
 
-module.exports = mongoose.model("User", UserSchema);
+// add user to database
+const addUser = async (name, email, password, walletAddress) => {
+  try{
+    const userData = populateUser(name, email, password, walletAddress);
+    // Connect to the database and then insert into user table
+    await db.connectDB();
+    const userCollection = db.getDatabase().collection('users');
+    const result = await userCollection.insertOne(userData);
+    console.log("User created in database", result);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// create user to be added into
+const populateUser = (name, email, password, walletAddress) => {
+  try{
+    const userData = {
+      name: name,
+      email: email,
+      password: password,             // hash this and
+      walletAddress: walletAddress,   // this
+      createdAt: Date.now(),
+    };
+    console.log("User fields populated successfully.");
+    return userData;
+  } catch (err) {
+      console.error("Error populating user fields\n", err);
+  }
+};
+
+module.exports = addUser;
