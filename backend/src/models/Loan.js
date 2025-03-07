@@ -11,6 +11,7 @@ const addLoans = async (borrower, lender, amount, interestRate, duration, status
         const userCollection = db.getDatabase().collection('loans');
         const result = await userCollection.insertOne(loanData);
         console.log("Loan created in database", result);
+        return result;
     } catch (error){
         console.log(error);
     }

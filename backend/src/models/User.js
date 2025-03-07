@@ -11,6 +11,7 @@ const addUser = async (name, email, password, walletAddress) => {
     const userCollection = db.getDatabase().collection('users');
     const result = await userCollection.insertOne(userData);
     console.log("User created in database", result);
+    return result;
   } catch (error) {
     console.log(error);
   }
