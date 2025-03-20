@@ -1,11 +1,12 @@
 require('dotenv').config({ path: '../../.env' });
 const db = require('../../server');
+const bcrypt = require('bcryptjs');
 
 
 // add user to database
 const addUser = async (name, email, password, walletAddress) => {
   try{
-    const userData = populateUser(name, email, password, walletAddress);
+    const userData = await populateUser(name, email, password, walletAddress);
     // Connect to the database and then insert into user table
     await db.connectDB();
     const userCollection = db.getDatabase().collection('users');
@@ -18,13 +19,15 @@ const addUser = async (name, email, password, walletAddress) => {
 };
 
 // create user to be added into
-const populateUser = (name, email, password, walletAddress) => {
+const populateUser = async (name, email, password, walletAddress) => {
   try{
+    const hashed_password = await bcrypt.hash(password, 10);
+    //const hashed_walletAddress = await bcrypt.hash(walletAddress, 10);  // No need to hash this -- wallet addys are public on the blockchain
     const userData = {
       name: name,
       email: email,
-      password: password,             // hash this and
-      walletAddress: walletAddress,   // this
+      password: hashed_password,
+      walletAddress: walletAddress, 
       createdAt: Date.now(),
     };
     console.log("User fields populated successfully.");
