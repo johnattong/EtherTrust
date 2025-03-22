@@ -33,3 +33,15 @@ const getDatabase = () => database;
 exports.getClient = getClient;
 exports.getDatabase = getDatabase;
 exports.connectDB = connectDB;
+
+
+// Route setup
+const express = require('express');
+const app = express();
+const userRoutes = require('./src/routes/userRoutes');
+
+app.use(express.json()); // Parse JSON requests
+app.use('/api/user', userRoutes); // Load user routes
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
