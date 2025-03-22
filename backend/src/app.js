@@ -11,7 +11,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/loans", loanRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/loan", loanRoutes);
 
 module.exports = app;
