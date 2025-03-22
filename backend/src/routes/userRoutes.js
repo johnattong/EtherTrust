@@ -53,6 +53,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  res.status(200).json({ message: "Logout successful. Please remove token on frontend." });
+});
+
+
 // For backend testing only, pls don't use this anywhere a user could see it
 router.post("/test-login", async (req, res) => {
   const { email, password } = req.body;
