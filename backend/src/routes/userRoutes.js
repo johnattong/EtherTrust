@@ -4,10 +4,29 @@ const addUser = require("../models/User");
 const db = require('../../server');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
+const validator = require("validator");
 
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, walletAddress } = req.body;
+
+    // Email validation
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ error: "Invalid email format." });
+    }
+
+    // Password validation (at least 8 chars, 1 letter, 1 number)
+    const password_syntax = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!password_syntax.test(password)) {
+      return res.status(400).json({ error: "Password must be at least 8 characters long and contain at least one letter and one number." });
+    }
+
+    // Wallet address (42 chars and start with 0x)
+    const walletRegex = /^0x[a-fA-F0-9]{40}$/;
+    if (!walletRegex.test(walletAddress)) {
+      return res.status(400).json({ error: "Invalid Ethereum wallet address." });
+    }
+
     const user = await addUser(name, email, password, walletAddress);
     res.status(201).json(user);
   } catch (err) {
