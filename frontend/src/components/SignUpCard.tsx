@@ -31,14 +31,45 @@ export default function SignUpCard() {
     const [walletError, setWalletError] = React.useState(false);
     const [walletErrorMessage, setWalletErrorMessage] = React.useState('');
 
-    // TODO: add proper logic to connect to backend
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // successful register alert
+    const [success, setSuccess] = React.useState(false);
+    const [successMessage, setSuccessMessage] = React.useState('');
+
+    // validate inputs, send request, if ok -> redirect to sign in to login, else show alert
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        // if invalid do not send request
+        if (!validateInputs()) return;
+
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+
+        // send register request to backend
+        const response = await fetch('http://localhost:3000/api/user/register', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: data.get('name')?.toString(),
+                email: data.get('email')?.toString(),
+                password: data.get('password')?.toString(),
+                walletAddress: data.get('walletAddress')?.toString(),
+            }),
+            credentials: "include",
         });
+
+        // set alert and redirect to sign-in
+        if (response.ok) {
+            setSuccess(true);
+            setSuccessMessage("Signup successful! Redirecting to sign-in...");
+            setTimeout(() => {
+                window.location.href = '/'
+            }, 5000);
+        }
+        else{
+            setSuccess(false);
+            setSuccessMessage("Signup failed! Something went wrong...");
+            window.location.reload();
+        }
     };
 
 
@@ -136,6 +167,7 @@ export default function SignUpCard() {
         return walletRegex.test(address);
     };
 
+    // card stylings
     const Card = styled(MuiCard)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
@@ -156,7 +188,7 @@ export default function SignUpCard() {
 
     return (
 
-        // container for sign-in
+        // container for sign-up
         <Card
             variant="outlined"
         >
@@ -167,6 +199,8 @@ export default function SignUpCard() {
 
             <Box
                 component="form"
+                name="signUp"
+                id="signUp"
                 onSubmit={handleSubmit}
                 noValidate
                 sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
@@ -262,11 +296,7 @@ export default function SignUpCard() {
                         color={walletError ? 'error' : 'primary'}
                     />
                 </FormControl>
-                <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                />
-                <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
+                <Button type="submit" fullWidth variant="contained">
                     Sign Up
                 </Button>
                 <Typography sx={{ textAlign: 'center' }}>
@@ -281,6 +311,14 @@ export default function SignUpCard() {
             </Link>
 
                 </Typography>
+
+                {success && (
+                    <Alert severity="success" variant="filled">{successMessage}</Alert>
+                )}
+
+                {(!success && successMessage) && (
+                    <Alert severity="error" variant="filled">{successMessage}</Alert>
+                )}
 
             </Box>
 

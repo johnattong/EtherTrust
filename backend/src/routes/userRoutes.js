@@ -15,10 +15,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "Invalid email format." });
     }
 
-    // Password validation (at least 8 chars, 1 letter, 1 number)
-    const password_syntax = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    // Password validation (at least 8 chars, 1 letter, 1 number, 1 special char (@$!%*?&) )
+    const password_syntax = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!password_syntax.test(password)) {
-      return res.status(400).json({ error: "Password must be at least 8 characters long and contain at least one letter and one number." });
+      return res.status(400).json({ error: "Password must be at least 8 characters long and contain at least one letter, one number, one special char." });
     }
 
     // Wallet address (42 chars and start with 0x)
@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
 
     // Provided info is good, generate JWT token
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, name: user.name, walletAddress: user.walletAddress },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }   // Token expires in 1 hour, change this?
     );
@@ -63,7 +63,6 @@ router.post("/login", async (req, res) => {
     // Everything OK, user session should be started now
     res.status(200).json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, walletAddress: user.walletAddress },
       message: "Login successful.",
     });
 

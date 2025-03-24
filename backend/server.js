@@ -40,6 +40,10 @@ const express = require('express');
 const app = express();
 const userRoutes = require('./src/routes/userRoutes');
 
+// this allows requests from any source ... maybe change in the future
+const cors = require('cors');
+app.use(cors({origin: true, credentials: true}));
+
 app.use(express.json()); // Parse JSON requests
 app.use('/api/user', userRoutes); // Load user routes
 

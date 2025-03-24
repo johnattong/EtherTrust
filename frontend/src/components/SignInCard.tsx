@@ -12,22 +12,46 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import {Alert} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 
 
 
 export default function SignInCard() {
+    const navigate = useNavigate();
     const [isValid, setIsValid] = React.useState(true);
+    const [signIn, setSignIn] = React.useState(false);
 
-    /// TODO: add proper logic to connect to backend
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // submit handler... validates inputs, tries login -> shows success and navigate to dashboard if success
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        validateInputs();
+        if (!isValid) return;
 
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
+
+        const response = await fetch('http://localhost:3000/api/user/login', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: data.get('email')?.toString(),
+                password: data.get('password')?.toString(),
+            }),
+            credentials: "include",
         });
+
+        if (response.ok) {
+            const result = await response.json();
+            localStorage.setItem('token', result.token);
+            setSignIn(true);
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 1500);
+        }
+        else{
+            setIsValid(false);
+            setSignIn(false);
+        }
     }
 
     // ensure email/password inputs are valid
@@ -90,6 +114,8 @@ export default function SignInCard() {
 
             <Box
                 component="form"
+                name="signIn"
+                id="signIn"
                 onSubmit={handleSubmit}
                 noValidate
                 sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
@@ -130,7 +156,7 @@ export default function SignInCard() {
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
                 />
-                <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
+                <Button type="submit" fullWidth variant="contained">
                     Sign in
                 </Button>
                 <Typography sx={{ textAlign: 'center' }}>
@@ -149,6 +175,9 @@ export default function SignInCard() {
                     <Alert variant="filled" severity="error">
                         Invalid email/password
                     </Alert>
+                )}
+                {signIn && (
+                    <Alert variant="filled" severity="success">Signed in successfully!</Alert>
                 )}
             </Box>
 

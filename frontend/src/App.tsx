@@ -5,6 +5,16 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {darkTheme} from "../themes/AppTheme.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import SignUpCard from "./components/SignUpCard.tsx";
+import { Navigate, Outlet } from 'react-router-dom';
+import Dashboard from "./components/dashboard.tsx";
+
+const PrivateRoute = () => {
+    // Check if token exists in localStorage
+    const token = localStorage.getItem('token');
+
+    // If no token, redirect to the sign-in page
+    return token ? <Outlet /> : <Navigate to="/" />;
+};
 
 
 function App() {
@@ -19,8 +29,15 @@ function App() {
                     minHeight="100vh"         // Full height of the viewport
                 >
                     <Routes>
+
+                        {/*public routes*/}
                         <Route path="/" element={<SignInCard />} />
                         <Route path="/signup" element={<SignUpCard />} />
+
+                        {/*private routes*/}
+                        <Route element={<PrivateRoute />} >
+                            <Route path="/dashboard" element={<Dashboard />} />
+                        </Route>
                     </Routes>
                 </Box>
             </BrowserRouter>
