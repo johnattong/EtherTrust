@@ -75,7 +75,7 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logout successful. Please remove token on frontend." });
 });
 
-router.delete("/delete-account", auth, async (req, res) => {
+router.delete("/delete-account", async (req, res) => {
   try {
     await db.connectDB();
     const userCollection = db.getDatabase().collection("users");
@@ -97,7 +97,7 @@ router.delete("/delete-account", auth, async (req, res) => {
 });
 
 // Change password
-router.post("/change-password", auth, async (req, res) => {
+router.post("/change-password", async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
   // Password validation (at least 8 chars, 1 letter, 1 number, 1 special char (@$!%*?&) )
