@@ -75,6 +75,65 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logout successful. Please remove token on frontend." });
 });
 
+router.delete("/delete-account", auth, async (req, res) => {
+  try {
+    await db.connectDB();
+    const userCollection = db.getDatabase().collection("users");
+
+    // First we must check if user even exists
+    if (!userCollection) {
+      return res.status(404).json({ error: "User not found or already deleted." });
+    }
+
+    // Now drop
+    const result = await userCollection.deleteOne({ email: req.user.email });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "User not found or already deleted." });
+    }
+    res.status(200).json({ message: "Account deleted successfully." });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete account." });
+  }
+});
+
+// Change password
+router.post("/change-password", auth, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  // Password validation (at least 8 chars, 1 letter, 1 number, 1 special char (@$!%*?&) )
+  const password_syntax = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!password_syntax.test(newPassword)) {
+    return res.status(400).json({ error: "Password must be at least 8 characters long and contain at least one letter, one number, one special char." });
+  }
+
+  // Change pass on db
+  try {
+    // Get user
+    await db.connectDB();
+    const userCollection = db.getDatabase().collection("users");
+    const user = await userCollection.findOne({ email: req.user.email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // NOTE: we might not even need to check pass on the backend
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Current password is incorrect." });
+    }
+
+    // Update password on db
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    await userCollection.updateOne(
+      { email: req.user.email },
+      { $set: { password: hashedNewPassword } }
+    );
+    res.status(200).json({ message: "Password changed successfully." });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to change password." });
+  }
+});
+
 
 // For backend testing only, pls don't use this anywhere a user could see it
 router.post("/test-login", async (req, res) => {
