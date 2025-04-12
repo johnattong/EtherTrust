@@ -37,6 +37,15 @@ router.get("/loans/mine", auth, async (req, res) => {
 router.post("/loans/create", auth, async (req, res) => {
     const { amount, interestRate, duration } = req.body;
   
+    // Validate given params are logical
+    if (
+      typeof amount !== "number" || amount <= 0 || amount > 1000000 ||
+      typeof interestRate !== "number" || interestRate < 0 || interestRate > 100 ||
+      typeof duration !== "number" || duration <= 0 || duration > 120
+    ) {
+      return res.status(400).json({ error: "Invalid loan parameters. Please check amount, interest rate, and duration." });
+    }
+
     // See: database schema
     const loan = {
       borrower: req.user.email,
@@ -48,10 +57,17 @@ router.post("/loans/create", auth, async (req, res) => {
       createdAt: new Date(),
     };
 
-    // TODO: check if given data is correct (syntax, not trying to loan -1$, etc.)
     try {
       // Add loan to db
-      const dbResult = await addLoans(borrower, lender, amount, interestRate, duration, status, createdAt);
+      const dbResult = await addLoans(
+        loan.borrower,
+        loan.lender,
+        loan.amount,
+        loan.interestRate,
+        loan.duration,
+        loan.status,
+        loan.createdAt
+      );
       if (!dbResult?.insertedId) {
         return res.status(500).json({ error: "Loan failed to insert in DB" });
       }
