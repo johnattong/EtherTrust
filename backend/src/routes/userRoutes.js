@@ -5,6 +5,7 @@ const db = require('../../server');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const auth = require("../controllers/authMiddleware");
 
 router.post("/register", async (req, res) => {
   try {
@@ -75,7 +76,7 @@ router.post("/logout", (req, res) => {
   res.status(200).json({ message: "Logout successful. Please remove token on frontend." });
 });
 
-router.delete("/delete-account", async (req, res) => {
+router.delete("/delete-account", auth, async (req, res) => {
   try {
     await db.connectDB();
     const userCollection = db.getDatabase().collection("users");
@@ -96,8 +97,7 @@ router.delete("/delete-account", async (req, res) => {
   }
 });
 
-// Change password
-router.post("/change-password", async (req, res) => {
+router.post("/change-password", auth, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
   // Password validation (at least 8 chars, 1 letter, 1 number, 1 special char (@$!%*?&) )
@@ -134,8 +134,29 @@ router.post("/change-password", async (req, res) => {
   }
 });
 
+// This allows the frontend to verify if a user is authenticated and fetch their basic profile data
+router.get("/me", auth, async (req, res) => {
+  try {
+    // Collet user info
+    await db.connectDB();
+    const userCollection = db.getDatabase().collection("users");
+    const user = await userCollection.findOne({ email: req.user.email });
+    if (!user) return res.status(404).json({ error: "User not found." });
+
+    // Send it all
+    res.status(200).json({
+      name: user.name,
+      email: user.email,
+      walletAddress: user.walletAddress
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Could not fetch user profile." });
+  }
+});
+
 
 // For backend testing only, pls don't use this anywhere a user could see it
+// TODO: COMMENT THIS OUT BEFORE SPRINT 2
 router.post("/test-login", async (req, res) => {
   const { email, password } = req.body;
 
