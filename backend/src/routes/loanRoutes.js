@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const auth = require("../controllers/authMiddleware");
+const contract = require("../contracts/contract");
+const addLoans = require("../models/Loan");
 
 
 // Loan routes will follow this address: /api/user/loans/...
@@ -46,11 +49,24 @@ router.post("/loans/create", auth, async (req, res) => {
     };
 
     // TODO: check if given data is correct (syntax, not trying to loan -1$, etc.)
+    try {
+      // Add loan to db
+      const dbResult = await addLoans(borrower, lender, amount, interestRate, duration, status, createdAt);
+      if (!dbResult?.insertedId) {
+        return res.status(500).json({ error: "Loan failed to insert in DB" });
+      }
   
-    // Basically all we do is insert the loan into the DB
-    // TODO: will call function in Loan.js
-
-    // TODO: must do smart contract stuff
+      // Smart contract call
+      const tx = await contract.update(amount);
+      await tx.wait();
+  
+      res.status(201).json({
+        message: "Loan created and recorded on blockchain.",
+        loanId: dbResult.insertedId
+      });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to create loan." });
+    }
 });
 
 // Fund loan route
@@ -70,9 +86,9 @@ router.post("/loans/fund/:loanId", auth, async (req, res) => {
       return res.status(400).json({ error: "Loan already funded or not found" });
     }
 
-    // TODO: must do smart contract stuff
+    const tx = await contract.update(loan.amount);
+    await tx.wait();
     
-
     res.status(200).json({ message: "Loan funded successfully" });
   } catch (err) {
     res.status(500).json({ error: "Failed to fund loan" });
