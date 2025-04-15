@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -25,8 +24,10 @@ export default function SignInCard() {
     // submit handler... validates inputs, tries login -> shows success and navigate to dashboard if success
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        validateInputs();
-        if (!isValid) return;
+
+        const isFormValid = validateInputs();
+        setIsValid(isFormValid);
+        if (!isFormValid) return;
 
         const data = new FormData(event.currentTarget);
 
@@ -39,14 +40,13 @@ export default function SignInCard() {
             }),
             credentials: "include",
         });
-
         if (response.ok) {
             const result = await response.json();
             localStorage.setItem('token', result.token);
             setSignIn(true);
             setTimeout(() => {
                 navigate('/dashboard');
-            }, 1500);
+            }, 1000);
         }
         else{
             setIsValid(false);
@@ -55,22 +55,13 @@ export default function SignInCard() {
     }
 
     // ensure email/password inputs are valid
-    const validateInputs = () => {
+    const validateInputs = (): boolean => {
         const email = document.getElementById('email') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
 
-
-        if (!validateEmail(email.value)) {
-            setIsValid(false);
-            return;
-        }
-
-        if (!validatePassword(password.value)) {
-            setIsValid(false);
-            return;
-        }
-
-        setIsValid(true);
+        if (!validateEmail(email.value)) return false;
+        if (!validatePassword(password.value)) return false;
+        return true;
     }
     const validateEmail = (email: string) => {
         // Regular expression for basic email validation

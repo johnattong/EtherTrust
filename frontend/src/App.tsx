@@ -1,12 +1,14 @@
 import React from "react";
-import { Box, ThemeProvider} from "@mui/material";  // Import necessary MUI components
-import SignInCard from "./components/SignInCard.tsx";
+import { Box, ThemeProvider} from "@mui/material";  // Import necessary MUI pages
+import SignInCard from "./pages/SignInCard.tsx";
 import CssBaseline from '@mui/material/CssBaseline';
 import {darkTheme} from "../themes/AppTheme.tsx";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import SignUpCard from "./components/SignUpCard.tsx";
+import SignUpCard from "./pages/SignUpCard.tsx";
 import { Navigate, Outlet } from 'react-router-dom';
-import Dashboard from "./components/dashboard.tsx";
+import Dashboard from "./pages/dashboard.tsx";
+import Account from "./pages/Account.tsx";
+
 
 const PrivateRoute = () => {
     // Check if token exists in localStorage
@@ -37,6 +39,7 @@ function App() {
                         {/*private routes*/}
                         <Route element={<PrivateRoute />} >
                             <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/account" element={<Account/>} />
                         </Route>
                     </Routes>
                 </Box>
