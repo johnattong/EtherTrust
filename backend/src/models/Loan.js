@@ -14,6 +14,7 @@ const addLoans = async (borrower, lender, amount, interestRate, duration, status
         return result;
     } catch (error){
         console.log(error);
+        throw error;
     }
 }
 
@@ -33,6 +34,7 @@ const populateLoans = async (borrower, lender, amount, interestRate, duration, s
         return loan;
     } catch (error){
         console.log("Error populating loan fields\n", error);
+        throw error;
     }
 };
 

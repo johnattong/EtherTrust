@@ -3,7 +3,9 @@ const { ethers } = require("ethers");
 
 const contractABI = [
   "function update(int256 newAmt) public",
-  "event UpdatedLoanAmt(int256 oldAmt, int256 newAmt)"
+  "function repay(int256 repaidAmt) public",
+  "event UpdatedLoanAmt(int256 oldAmt, int256 newAmt)",
+  "event LoanRepaid(address indexed borrower, int256 repaidAmt)"
 ];
 
 const provider = new ethers.providers.JsonRpcProvider(process.env.API_URL);

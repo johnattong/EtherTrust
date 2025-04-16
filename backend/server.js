@@ -39,6 +39,7 @@ exports.connectDB = connectDB;
 const express = require('express');
 const app = express();
 const userRoutes = require('./src/routes/userRoutes');
+const loanRoutes = require('./src/routes/loanRoutes');
 
 // this allows requests from any source ... maybe change in the future
 const cors = require('cors');
@@ -46,6 +47,7 @@ app.use(cors({origin: true, credentials: true}));
 
 app.use(express.json()); // Parse JSON requests
 app.use('/api/user', userRoutes); // Load user routes
+app.use('/api/loan', loanRoutes); // Load loan routes
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
