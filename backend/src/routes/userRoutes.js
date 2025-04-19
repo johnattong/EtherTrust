@@ -81,11 +81,6 @@ router.delete("/delete-account", auth, async (req, res) => {
     await db.connectDB();
     const userCollection = db.getDatabase().collection("users");
 
-    // First we must check if user even exists
-    if (!userCollection) {
-      return res.status(404).json({ error: "User not found or already deleted." });
-    }
-
     // Now drop
     const result = await userCollection.deleteOne({ email: req.user.email });
     if (result.deletedCount === 0) {

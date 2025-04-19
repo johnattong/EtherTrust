@@ -77,6 +77,38 @@ router.get("/loans/:loanId", auth, async (req, res) => {
   }
 });
 
+// Get all loan's info in a neat container, by loan id
+router.get("/loans/summary/:loanId", auth, async (req, res) => {
+  const { loanId } = req.params;
+
+  try {
+    await db.connectDB();
+    const dbRef = db.getDatabase().collection("loans");
+    const loan = await dbRef.findOne({ _id: new ObjectId(loanId) });
+
+    if (!loan) {
+      return res.status(404).json({ error: "Loan not found." });
+    }
+
+    const repaid = loan.repaidAmount || 0;
+    const remaining = loan.amount - repaid;
+
+    res.status(200).json({
+      loanId,
+      amount: loan.amount,
+      repaid,
+      remaining,
+      status: loan.status,
+      borrower: loan.borrower,
+      lender: loan.lender,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch loan summary." });
+  }
+});
+
+
+// Setters -- things that have actual functionality. TODO for now, functionality not fully verified.
 
 // Create loan route
 router.post("/loans/create", auth, async (req, res) => {
@@ -130,7 +162,7 @@ router.post("/loans/create", auth, async (req, res) => {
     }
 });
 
-// Fund loan route
+// Fund loan route -- allows a lender to approve and fund a borrower's loan request.
 router.post("/loans/fund/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
@@ -165,33 +197,59 @@ router.post("/loans/fund/:loanId", auth, async (req, res) => {
   }
 });
 
-// Delete loan request before it's funded
-router.delete("/loans/delete/:loanId", auth, async (req, res) => {
+// This route allows the borrower to repay a portion of the loan amount
+router.post("/loans/repay/partial/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
+  const { amount } = req.body;
+
+  if (typeof amount !== "number" || amount <= 0) {
+    return res.status(400).json({ error: "Invalid repayment amount." });
+  }
 
   try {
-    // Connect to db
     await db.connectDB();
     const dbRef = db.getDatabase().collection("loans");
 
-    // Find loan's info from id
-    const result = await dbRef.deleteOne({
-      _id: new ObjectId(loanId),
-      borrower: req.user.email,
-      status: "pending"
-    });
+    const loan = await dbRef.findOne({ _id: new ObjectId(loanId), borrower: req.user.email });
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Loan not found or cannot be deleted." });
+    if (!loan) {
+      return res.status(404).json({ error: "Loan not found or unauthorized." });
     }
 
-    res.status(200).json({ message: "Loan deleted successfully." });
+    if (loan.status !== "funded") {
+      return res.status(400).json({ error: "Only funded loans can be repaid." });
+    }
+
+    // Calculate remaining balance
+    const remaining = loan.amount - (loan.repaidAmount || 0);
+    if (amount > remaining) {
+      return res.status(400).json({ error: "Repayment exceeds remaining balance." });
+    }
+
+    // Update repayment
+    const newRepaidAmount = (loan.repaidAmount || 0) + amount;
+    const newStatus = newRepaidAmount >= loan.amount ? "repaid" : "funded";
+
+    const result = await dbRef.updateOne(
+      { _id: new ObjectId(loanId) },
+      {
+        $set: { repaidAmount: newRepaidAmount, status: newStatus }
+      }
+    );
+
+    const tx = await contract.repayPartial(amount);
+    await tx.wait();
+
+    res.status(200).json({ message: `Repayment of ${amount} processed.`, newStatus });
   } catch (err) {
-    res.status(500).json({ error: "Failed to delete loan." });
+    res.status(500).json({ error: "Failed to process repayment." });
   }
 });
 
+
+
 // (Maybe not needed) -- marks loan repaid, could be useful for smart contract stuff
+// Lets a borrower mark their loan as fully repaid.
 router.post("/loans/repay/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
@@ -227,6 +285,32 @@ router.post("/loans/repay/:loanId", auth, async (req, res) => {
     res.status(200).json({ message: "Loan marked as repaid." });
   } catch (err) {
     res.status(500).json({ error: "Failed to repay loan." });
+  }
+});
+
+// Delete loan request before it's funded
+router.delete("/loans/delete/:loanId", auth, async (req, res) => {
+  const { loanId } = req.params;
+
+  try {
+    // Connect to db
+    await db.connectDB();
+    const dbRef = db.getDatabase().collection("loans");
+
+    // Find loan's info from id
+    const result = await dbRef.deleteOne({
+      _id: new ObjectId(loanId),
+      borrower: req.user.email,
+      status: "pending"
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Loan not found or cannot be deleted." });
+    }
+
+    res.status(200).json({ message: "Loan deleted successfully." });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete loan." });
   }
 });
   
