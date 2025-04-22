@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../controllers/authMiddleware");
-const contract = require("../contracts/contract");
+const contract = require("../contracts/deployLoan");
 const addLoans = require("../models/Loan");
 const db = require("../../server");
 const { ObjectId } = require("mongodb");
+const { deployLoan } = require("../contracts/deployLoan");
 
 
 // Loan routes will follow this address: /api/user/loans/...
@@ -132,10 +133,19 @@ router.post("/loans/create", auth, async (req, res) => {
       duration,
       status: "pending",
       createdAt: new Date(),
+      contractAddress: null,
     };
 
     try {
       // Add loan to db
+      const contractAddress = await deployLoan(
+          req.user.walletAddress,
+          amount,
+          interestRate,
+          duration
+      );
+      loan.contractAddress = contractAddress;
+
       const dbResult = await addLoans(
         loan.borrower,
         loan.lender,
@@ -143,19 +153,17 @@ router.post("/loans/create", auth, async (req, res) => {
         loan.interestRate,
         loan.duration,
         loan.status,
-        loan.createdAt
+        loan.createdAt,
+          contractAddress
       );
       if (!dbResult?.insertedId) {
         return res.status(500).json({ error: "Loan failed to insert in DB" });
       }
-  
-      // Smart contract call
-      const tx = await contract.update(amount);
-      await tx.wait();
-  
+
       res.status(201).json({
-        message: "Loan created and recorded on blockchain.",
-        loanId: dbResult.insertedId
+        message: "Loan created and smart contract deployed.",
+        loanId: dbResult.insertedId,
+        contractAddress
       });
     } catch (err) {
       res.status(500).json({ error: "Failed to create loan." });

@@ -3,9 +3,9 @@ const db = require('../../server');
 
 
 // add loans to database
-const addLoans = async (borrower, lender, amount, interestRate, duration, status, createdAt) => {
+const addLoans = async (borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress) => {
     try{
-        const loanData = populateLoans(borrower, lender, amount, interestRate, duration, status, createdAt);
+        const loanData = populateLoans(borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress);
         // Connect to the database and then insert into user table
         await db.connectDB();
         const userCollection = db.getDatabase().collection('loans');
@@ -19,7 +19,7 @@ const addLoans = async (borrower, lender, amount, interestRate, duration, status
 }
 
 // populate loan fields
-const populateLoans = async (borrower, lender, amount, interestRate, duration, status, createdAt) => {
+const populateLoans = async (borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress) => {
     try {
         const loan = {
             borrower: borrower,
@@ -28,7 +28,8 @@ const populateLoans = async (borrower, lender, amount, interestRate, duration, s
             interestRate: interestRate,
             duration: duration,
             status: status,
-            createdAt: createdAt
+            createdAt: createdAt,
+            contractAddress: contractAddress
         };
         console.log("Loan fields populated successfully.");
         return loan;

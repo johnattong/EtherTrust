@@ -1,30 +1,45 @@
-pragma solidity >=0.8.10;
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
 contract Loan {
-    event UpdatedLoanAmt(int oldAmt, int newAmt);
-    event LoanRepaid(address indexed borrower, int repaidAmt);
-    event PartialRepayment(address indexed borrower, int256 amount, int256 totalRepaid);
-
-    int public LoanAmt;
     address public borrower;
+    address public lender;
+    uint256 public amount;
+    uint256 public interestRate;
+    uint256 public duration;
+    uint256 public repaidAmount;
+    bool public isFunded;
+    bool public isRepaid;
 
-    constructor(int memory initLoanAmt) {
-        LoanAmt = initLoanAmt;
+    constructor(address _borrower, uint256 _amount, uint256 _interestRate, uint256 _duration) {
+        borrower = _borrower;
+        amount = _amount;
+        interestRate = _interestRate;
+        duration = _duration;
+        repaidAmount = 0;
+        isFunded = false;
+        isRepaid = false;
     }
 
-    function update(int memory newAmt) public {
-        int memory oldAmt = LoanAmt;
-        LoanAmt = newAmt;
-        emit UpdatedLoanAmt(oldAmt, newAmt);
+    function fundLoan() public {
+        require(!isFunded, "Loan already funded");
+        lender = msg.sender;
+        isFunded = true;
     }
 
-    function repay(int repaidAmt) public {
-        require(repaidAmt > 0, "Repayment must be greater than zero");
-        emit LoanRepaid(msg.sender, repaidAmt);
+    function repay(uint256 payment) public {
+        require(msg.sender == borrower, "Only borrower can repay");
+        require(isFunded, "Loan must be funded");
+        require(!isRepaid, "Loan already repaid");
+
+        repaidAmount += payment;
+        if (repaidAmount >= amount) {
+            isRepaid = true;
+        }
     }
 
-    function repayPartial(int256 amount) public {
-        require(amount > 0, "Partial amount must be positive");
-        TotalRepaid += amount;
-        emit PartialRepayment(msg.sender, amount, TotalRepaid);
+    function getSummary() public view returns (address, address, uint256, uint256, uint256, uint256, bool, bool) {
+        return (borrower, lender, amount, interestRate, duration, repaidAmount, isFunded, isRepaid);
     }
 }

@@ -1,16 +1,27 @@
-import {ethers} from "ethers";
+/*
+//scripts/deploy.js is for commandline deployment, not backend deployment
+const hre = require("hardhat");
 
 async function main() {
-    const Loan = await ethers.getContractFactory("Loan");
+  // Replace these with test values or args
+  const borrower = "0x1234...";         // borrower Ethereum address
+  const amount = 1000;                  // principal amount
+  const interestRate = 10;              // in percent
+  const duration = 12;                  // in months or blocks, depending on contract logic
 
-    // Start deployment, returning a promise that resolves to a contract object
-    const loan = await Loan.deploy("Loan");
-    console.log("Contract deployed to address:", loan.address);
+  const Loan = await hre.ethers.getContractFactory("Loan");
+  const loan = await Loan.deploy(borrower, amount, interestRate, duration);
+
+  await loan.deployed();
+
+  console.log(`Loan contract deployed to: ${loan.address}`);
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch(error => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+
+ */
