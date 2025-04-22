@@ -12,7 +12,7 @@ const { deployLoan } = require("../contracts/deployLoan");
 
 // Getters: stuff that will be passed to frontend
 // For lenders
-router.get("/loans/all", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     await db.connectDB();
     const loans = await db.getDatabase().collection("loans").find({ status: "pending" }).toArray();
@@ -23,7 +23,7 @@ router.get("/loans/all", async (req, res) => {
 });
 
 // For borrowers
-router.get("/loans/mine", auth, async (req, res) => {
+router.get("/mine", auth, async (req, res) => {
   try {
     await db.connectDB();
     const dbRef = db.getDatabase().collection("loans");
@@ -35,7 +35,7 @@ router.get("/loans/mine", auth, async (req, res) => {
 });
 
 // Get by email
-router.get("/loans/by-email/:email", auth, async (req, res) => {
+router.get("/by-email/:email", auth, async (req, res) => {
   const { email } = req.params;
 
   try {
@@ -59,7 +59,7 @@ router.get("/loans/by-email/:email", auth, async (req, res) => {
 });
 
 // Get by loan id
-router.get("/loans/:loanId", auth, async (req, res) => {
+router.get("/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
   try {
@@ -79,7 +79,7 @@ router.get("/loans/:loanId", auth, async (req, res) => {
 });
 
 // Get all loan's info in a neat container, by loan id
-router.get("/loans/summary/:loanId", auth, async (req, res) => {
+router.get("/summary/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
   try {
@@ -112,7 +112,7 @@ router.get("/loans/summary/:loanId", auth, async (req, res) => {
 // Setters -- things that have actual functionality. TODO for now, functionality not fully verified.
 
 // Create loan route
-router.post("/loans/create", auth, async (req, res) => {
+router.post("/create", auth, async (req, res) => {
     const { amount, interestRate, duration } = req.body;
   
     // Validate given params are logical
@@ -171,7 +171,7 @@ router.post("/loans/create", auth, async (req, res) => {
 });
 
 // Fund loan route -- allows a lender to approve and fund a borrower's loan request.
-router.post("/loans/fund/:loanId", auth, async (req, res) => {
+router.post("/fund/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
   try {
@@ -206,7 +206,7 @@ router.post("/loans/fund/:loanId", auth, async (req, res) => {
 });
 
 // This route allows the borrower to repay a portion of the loan amount
-router.post("/loans/repay/partial/:loanId", auth, async (req, res) => {
+router.post("/repay/partial/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
   const { amount } = req.body;
 
@@ -258,7 +258,7 @@ router.post("/loans/repay/partial/:loanId", auth, async (req, res) => {
 
 // (Maybe not needed) -- marks loan repaid, could be useful for smart contract stuff
 // Lets a borrower mark their loan as fully repaid.
-router.post("/loans/repay/:loanId", auth, async (req, res) => {
+router.post("/repay/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
   try {
@@ -297,7 +297,7 @@ router.post("/loans/repay/:loanId", auth, async (req, res) => {
 });
 
 // Delete loan request before it's funded
-router.delete("/loans/delete/:loanId", auth, async (req, res) => {
+router.delete("/delete/:loanId", auth, async (req, res) => {
   const { loanId } = req.params;
 
   try {

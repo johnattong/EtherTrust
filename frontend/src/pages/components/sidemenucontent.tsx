@@ -15,7 +15,6 @@ const mainListItems = [
     { text: 'Home', icon: <HomeRoundedIcon />, path:'/dashboard' },
     { text: 'Find a Loan', icon: <SearchRoundedIcon />, path:'/find' },
     { text: 'Create a Loan', icon: <AddCardRoundedIcon /> , path:'/create' },
-    { text: 'Your Loans', icon: <PaymentsRoundedIcon />, path:'/your-loans' },
 ];
 
 

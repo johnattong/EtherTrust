@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import MenuContent from './sidemenucontent.tsx'
 import List from "@mui/material/List";
@@ -35,7 +34,6 @@ interface SideMenuProps {
 export default function SideMenu({open, onAboutClick}: SideMenuProps) {
 
     const secondaryItems = [
-        {text: "Help", icon: <HelpOutlineRoundedIcon /> },
         {text : "About", icon: <InfoRoundedIcon /> }
     ]
 

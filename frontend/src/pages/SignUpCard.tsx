@@ -2,11 +2,8 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -43,13 +40,18 @@ export default function SignUpCard() {
         if (!validateInputs()) return;
 
         const data = new FormData(event.currentTarget);
+        const rawName = data.get('name')?.toString() || '';
+        const capitalizedName = rawName
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
 
         // send register request to backend
         const response = await fetch('http://localhost:3000/api/user/register', {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                name: data.get('name')?.toString(),
+                name: capitalizedName,
                 email: data.get('email')?.toString(),
                 password: data.get('password')?.toString(),
                 walletAddress: data.get('walletAddress')?.toString(),
