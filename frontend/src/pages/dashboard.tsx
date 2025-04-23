@@ -168,6 +168,7 @@ export default function Dashboard() {
         flexDirection: 'column',
         alignSelf: 'center',
         alignItems: 'flex-start',
+        minWidth: 'fit-content',
         width: 'fit-content',
         padding: theme.spacing(4),
         gap: theme.spacing(2),
@@ -212,46 +213,54 @@ export default function Dashboard() {
                     <Box sx={{ height: 2, width: '100%', background: 'linear-gradient(to right, #444, transparent)' }} />
                     <Stack sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
                       <List>
-                        {borrowItems.map((item, index) => (
-                          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                              sx={{
-                                '&.Mui-selected': {
-                                  bgcolor: 'action.selected',
-                                  color: 'text.primary',
-                                },
-                                '&.Mui-selected:hover': {
-                                  bgcolor: 'action.selected',
-                                },
-                              }}
-                              onClick={() => {handleBackdrop(item)}}
-                            >
-                              <ListItemText
-                                primary={
-                                  <Typography variant="h4" color={item.lender ? "text.primary" : "error"} noWrap={true}>
-                                    {item.lender || "Not funded yet"}
-                                  </Typography>
-                                }
-                                sx={{ pr: 6 }}
-                              />
-                              <ListItemText
-                                primary={
-                                  <Typography variant="h6" color="text.primary" noWrap={true}>
-                                    ${item.amount.toFixed(2)}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Typography variant="body2" color="text.secondary" noWrap={true}>
-                                    {`${item.duration} days • ${item.interestRate}% interest`}
-                                  </Typography>
-                                }
-                                sx={{ pr: 6 }}
-                              />
-                              <ListItemIcon><NavigateNextRoundedIcon/></ListItemIcon>
-                            </ListItemButton>
-                            <Divider />
+                        {borrowItems.length === 0 ? (
+                          <ListItem>
+                            <ListItemText primary={<Typography variant="h4" color={"error"} noWrap={true}>
+                                {"No available loans"}
+                            </Typography>} />
                           </ListItem>
-                        ))}
+                        ) : (
+                          borrowItems.map((item, index) => (
+                            <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+                              <ListItemButton
+                                sx={{
+                                  '&.Mui-selected': {
+                                    bgcolor: 'action.selected',
+                                    color: 'text.primary',
+                                  },
+                                  '&.Mui-selected:hover': {
+                                    bgcolor: 'action.selected',
+                                  },
+                                }}
+                                onClick={() => {handleBackdrop(item)}}
+                              >
+                                <ListItemText
+                                  primary={
+                                    <Typography variant="h4" color={item.lender ? "text.primary" : "error"} noWrap={true}>
+                                      {item.lender || "Not funded yet"}
+                                    </Typography>
+                                  }
+                                  sx={{ pr: 2 }}
+                                />
+                                <ListItemText
+                                  primary={
+                                    <Typography variant="h6" color="text.primary" noWrap={true}>
+                                      ${item.amount.toFixed(2)}
+                                    </Typography>
+                                  }
+                                  secondary={
+                                    <Typography variant="body2" color="text.secondary" noWrap={true}>
+                                      {`${item.duration} days • ${item.interestRate}% interest`}
+                                    </Typography>
+                                  }
+                                  sx={{ pr: 2 }}
+                                />
+                                <ListItemIcon><NavigateNextRoundedIcon/></ListItemIcon>
+                              </ListItemButton>
+                              <Divider />
+                            </ListItem>
+                          ))
+                        )}
                       </List>
                     </Stack>
                   </Card>
@@ -263,46 +272,54 @@ export default function Dashboard() {
                     <Box sx={{ height: 2, width: '100%', background: 'linear-gradient(to right, #444, transparent)' }} />
                     <Stack sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
                       <List>
-                        {lendItems.map((item, index) => (
-                          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                              sx={{
-                                '&.Mui-selected': {
-                                  bgcolor: 'action.selected',
-                                  color: 'text.primary',
-                                },
-                                '&.Mui-selected:hover': {
-                                  bgcolor: 'action.selected',
-                                },
-                              }}
-                              onClick={() => {handleBackdrop(item)}}
-                            >
-                              <ListItemText
-                                primary={
-                                  <Typography variant="h4" color={item.borrower ? "text.primary" : "error"}>
-                                    {item.borrower || "No borrower yet"}
-                                  </Typography>
-                                }
-                                sx={{ pr: 6 }}
-                              />
-                              <ListItemText
-                                primary={
-                                  <Typography variant="h6" color="text.primary">
-                                    ${item.amount.toFixed(2)}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Typography variant="body2" color="text.secondary">
-                                    {`${item.duration} days • ${item.interestRate}% interest`}
-                                  </Typography>
-                                }
-                                sx={{ pr: 6 }}
-                              />
-                              <ListItemIcon><NavigateNextRoundedIcon/></ListItemIcon>
-                            </ListItemButton>
-                            <Divider />
+                        {lendItems.length === 0 ? (
+                          <ListItem>
+                            <ListItemText primary={<ListItemText primary={<Typography variant="h4" color={"error"} noWrap={true}>
+                                {"No available loans"}
+                            </Typography>} />} />
                           </ListItem>
-                        ))}
+                        ) : (
+                          lendItems.map((item, index) => (
+                            <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+                              <ListItemButton
+                                sx={{
+                                  '&.Mui-selected': {
+                                    bgcolor: 'action.selected',
+                                    color: 'text.primary',
+                                  },
+                                  '&.Mui-selected:hover': {
+                                    bgcolor: 'action.selected',
+                                  },
+                                }}
+                                onClick={() => {handleBackdrop(item)}}
+                              >
+                                <ListItemText
+                                  primary={
+                                    <Typography variant="h4" color={item.borrower ? "text.primary" : "error"}>
+                                      {item.borrower || "No borrower yet"}
+                                    </Typography>
+                                  }
+                                  sx={{ pr: 6 }}
+                                />
+                                <ListItemText
+                                  primary={
+                                    <Typography variant="h6" color="text.primary">
+                                      ${item.amount.toFixed(2)}
+                                    </Typography>
+                                  }
+                                  secondary={
+                                    <Typography variant="body2" color="text.secondary">
+                                      {`${item.duration} days • ${item.interestRate}% interest`}
+                                    </Typography>
+                                  }
+                                  sx={{ pr: 6 }}
+                                />
+                                <ListItemIcon><NavigateNextRoundedIcon/></ListItemIcon>
+                              </ListItemButton>
+                              <Divider />
+                            </ListItem>
+                          ))
+                        )}
                       </List>
                     </Stack>
                   </Card>

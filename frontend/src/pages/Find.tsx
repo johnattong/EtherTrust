@@ -161,7 +161,7 @@ export default function Find() {
 
 
                 <Grid container spacing={2} sx={{ p: 2 }}>
-                    {items.filter(item => item.lender === null).map(item => (
+                    {items.filter(item => item.lender === null && !(item.borrower === email)).map(item => (
                         //@ts-ignore
                         <Grid item xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Card variant="outlined">

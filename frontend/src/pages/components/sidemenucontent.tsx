@@ -6,14 +6,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import AddCardRoundedIcon from '@mui/icons-material/AddCardRounded';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const mainListItems = [
     { text: 'Home', icon: <HomeRoundedIcon />, path:'/dashboard' },
-    { text: 'Find a Loan', icon: <SearchRoundedIcon />, path:'/find' },
-    { text: 'Create a Loan', icon: <AddCardRoundedIcon /> , path:'/create' },
+    { text: 'Fund a Loan', icon: <AttachMoneyIcon />, path:'/find' },
+    { text: 'Request a Loan', icon: <AddCardRoundedIcon /> , path:'/create' },
 ];
 
 // content for side drawer
