@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../controllers/authMiddleware");
-const contract = require("../contracts/deployLoan");
+const contract = require("../services/deployLoan");
 const addLoans = require("../models/Loan");
-const db = require("../../server");
+const db = require("../server");
 const { ObjectId } = require("mongodb");
-const { deployLoan } = require("../contracts/deployLoan");
+const { deployLoan } = require("../services/deployLoan");
 
 
 // Loan routes will follow this address: /api/user/loans/...
@@ -154,7 +154,7 @@ router.post("/create", auth, async (req, res) => {
         loan.duration,
         loan.status,
         loan.createdAt,
-          contractAddress
+          loan.contractAddress
       );
       if (!dbResult?.insertedId) {
         return res.status(500).json({ error: "Loan failed to insert in DB" });

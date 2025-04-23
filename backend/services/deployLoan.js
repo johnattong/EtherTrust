@@ -2,6 +2,7 @@
 const hre = require("hardhat");
 
 async function deployLoan(borrower, amount, interestRate, duration) {
+
   const LoanContract = await hre.ethers.getContractFactory("Loan");
 
   const contract = await LoanContract.deploy(
@@ -11,8 +12,9 @@ async function deployLoan(borrower, amount, interestRate, duration) {
     duration
   );
 
-  await contract.deployed();
-  return contract.address;
+  await contract.waitForDeployment();
+  console.log("Smart contract deployed")
+  return await contract.getAddress();
 }
 
 module.exports = { deployLoan };

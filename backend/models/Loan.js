@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '../../.env' });
-const db = require('../../server');
+require('dotenv').config({ path: '../.env' });
+const db = require('../server');
 
 
 // add loans to database
