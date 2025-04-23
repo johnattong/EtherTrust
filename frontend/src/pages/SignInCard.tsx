@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import {Alert} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import Stack from '@mui/material/Stack';
+
 
 
 
@@ -91,81 +93,83 @@ export default function SignInCard() {
     }));
 
     return (
-
-        // container for sign-in
-        <Card
-            variant="outlined"
-        >
-            <Typography
-                component="h1"
-                variant="h3">Sign In</Typography>
-
-
+        <Stack direction="column" alignItems="center" spacing={2} sx={{ mt: 6 }}>
+          <Typography variant="h4" sx={{ textAlign: 'center' }}>
+            Welcome to EtherTrust
+          </Typography>
+          <Typography variant="body1" sx={{ textAlign: 'center', maxWidth: 525 }}>
+            Our app helps people access small, affordable loans when they need them most Simple, secure, and fast!
+          </Typography>
+      
+          {/* container for sign-in */}
+          <Card variant="outlined" sx={{ width: 400, mt: 2 }}>
+            <Typography component="h1" variant="h3">
+              Sign In
+            </Typography>
+      
             <Box
-                component="form"
-                name="signIn"
-                id="signIn"
-                onSubmit={handleSubmit}
-                noValidate
-                sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+              component="form"
+              name="signIn"
+              id="signIn"
+              onSubmit={handleSubmit}
+              noValidate
+              sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
             >
-                <FormControl>
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <TextField
-                        id="email"
-                        type="email"
-                        name="email"
-                        error={!isValid}
-                        placeholder="username@email.com"
-                        autoComplete="email"
-                        autoFocus
-                        required
-                        fullWidth
-                        variant="outlined"
-                    />
-                </FormControl>
-                <FormControl>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <FormLabel htmlFor="password">Password</FormLabel>
-                    </Box>
-                    <TextField
-                        name="password"
-                        error={!isValid}
-                        placeholder="••••••••••"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        autoFocus
-                        required
-                        fullWidth
-                        variant="outlined"
-                    />
-                </FormControl>
-                <Button type="submit" fullWidth variant="contained">
-                    Sign in
-                </Button>
-                <Typography sx={{ textAlign: 'center' }}>
-                    Don&apos;t have an account?{' '}
-                    <span>
-            <Link
-                href="/signup"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-            >
-              Sign up
-            </Link>
-          </span>
-                </Typography>
-                {!isValid && (
-                    <Alert variant="filled" severity="error">
-                        Invalid email/password
-                    </Alert>
-                )}
-                {signIn && (
-                    <Alert variant="filled" severity="success">Signed in successfully!</Alert>
-                )}
+              <FormControl>
+                <FormLabel htmlFor="email">Email</FormLabel>
+                <TextField
+                  id="email"
+                  type="email"
+                  name="email"
+                  error={!isValid}
+                  placeholder="username@email.com"
+                  autoComplete="email"
+                  autoFocus
+                  required
+                  fullWidth
+                  variant="outlined"
+                />
+              </FormControl>
+              <FormControl>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <FormLabel htmlFor="password">Password</FormLabel>
+                </Box>
+                <TextField
+                  name="password"
+                  error={!isValid}
+                  placeholder="••••••••••"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  autoFocus
+                  required
+                  fullWidth
+                  variant="outlined"
+                />
+              </FormControl>
+              <Button type="submit" fullWidth variant="contained">
+                Sign in
+              </Button>
+              <Typography sx={{ textAlign: 'center' }}>
+                Don&apos;t have an account?{' '}
+                <span>
+                  <Link href="/signup" variant="body2" sx={{ alignSelf: 'center' }}>
+                    Sign up
+                  </Link>
+                </span>
+              </Typography>
+              {!isValid && (
+                <Alert variant="filled" severity="error">
+                  Invalid email/password
+                </Alert>
+              )}
+              {signIn && (
+                <Alert variant="filled" severity="success">
+                  Signed in successfully!
+                </Alert>
+              )}
             </Box>
-
-        </Card>
-    );
-}
+          </Card>
+        </Stack>
+      );
+    } 
