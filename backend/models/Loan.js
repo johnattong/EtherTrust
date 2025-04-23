@@ -5,11 +5,11 @@ const db = require('../server');
 // add loans to database
 const addLoans = async (borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress) => {
     try{
-        const loanData = populateLoans(borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress);
+        const loanData = await populateLoans(borrower, lender, amount, interestRate, duration, status, createdAt, contractAddress);
         // Connect to the database and then insert into user table
         await db.connectDB();
-        const userCollection = db.getDatabase().collection('loans');
-        const result = await userCollection.insertOne(loanData);
+        const loanCollection = db.getDatabase().collection('loans');
+        const result = await loanCollection.insertOne(loanData);
         console.log("Loan created in database", result);
         return result;
     } catch (error){

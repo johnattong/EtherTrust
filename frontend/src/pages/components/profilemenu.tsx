@@ -23,6 +23,7 @@ interface ProfileMenuProps {
     email: string;
 }
 
+// menu where account and logout buttons are
 export default function ProfileMenu({ name, email }: ProfileMenuProps) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const buttonRef = React.useRef<HTMLButtonElement>(null);

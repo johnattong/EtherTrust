@@ -1,7 +1,7 @@
 import SideMenu from "./components/sidemenu.tsx";
 import MenuAppBar from "./components/appbar.tsx";
 import ChangePassword from "./components/changePassword.tsx";
-import { Box, Card, Divider, Typography } from '@mui/material';
+import { Box, Divider, Typography } from '@mui/material';
 import {jwtDecode} from "jwt-decode";
 import About from "./components/about.tsx";
 import * as React from "react";
@@ -19,11 +19,15 @@ import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded';
 export default function Account() {
     // decode data
     const token = localStorage.getItem('token');
+    //@ts-ignore
     const data = jwtDecode(token);
 
     // user info
+    //@ts-ignore
     const name = data.name;
+    //@ts-ignore
     const email = data.email;
+    //@ts-ignore
     const walletAddress = data.walletAddress;
 
     const [about, setAbout] = React.useState(false);

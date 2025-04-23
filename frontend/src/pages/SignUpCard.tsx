@@ -224,6 +224,7 @@ export default function SignUpCard() {
                         color={nameError ? 'error' : 'primary'}
                     />
                 </FormControl>
+
                 <FormControl>
                     <FormLabel htmlFor="email">Email</FormLabel>
                     <TextField
@@ -241,6 +242,7 @@ export default function SignUpCard() {
                         color={emailError ? 'error' : 'primary'}
                     />
                 </FormControl>
+
                 <FormControl>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <FormLabel htmlFor="password">Password</FormLabel>
@@ -260,6 +262,7 @@ export default function SignUpCard() {
                         color={passwordError ? 'error' : 'primary'}
                     />
                 </FormControl>
+
                 <FormControl>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
@@ -279,6 +282,7 @@ export default function SignUpCard() {
                         color={matchError ? 'error' : 'primary'}
                     />
                 </FormControl>
+
                 <FormControl>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <FormLabel htmlFor="walletAddress">Wallet Address</FormLabel>
@@ -301,6 +305,7 @@ export default function SignUpCard() {
                 <Button type="submit" fullWidth variant="contained">
                     Sign Up
                 </Button>
+
                 <Typography sx={{ textAlign: 'center' }}>
                     Already have an account?{' '}
 

@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Box, ThemeProvider} from "@mui/material";  // Import necessary MUI pages
 import SignInCard from "./pages/SignInCard.tsx";
 import CssBaseline from '@mui/material/CssBaseline';

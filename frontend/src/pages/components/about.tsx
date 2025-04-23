@@ -8,6 +8,7 @@ interface AboutProps {
     closeAbout: () => void;
 }
 
+// about backdrop
 export default function About({open, closeAbout}: AboutProps) {
     return (
         <Backdrop

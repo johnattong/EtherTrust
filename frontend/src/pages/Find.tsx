@@ -5,17 +5,21 @@ import SideMenu from "./components/sidemenu.tsx";
 import About from "./components/about.tsx";
 import MenuAppBar from "./components/appbar.tsx";
 import * as React from "react";
-import {Box, Divider, Typography, Button, Toolbar, Backdrop, Alert} from "@mui/material";
+import {Box, Typography, Button, Backdrop, Alert} from "@mui/material";
 import {jwtDecode} from "jwt-decode";
 
 export default function Find() {
     // decode data
     const token = localStorage.getItem('token');
+    //@ts-ignore
     const data = jwtDecode(token);
 
     // user info
+    //@ts-ignore
     const name = data.name;
+    //@ts-ignore
     const email = data.email;
+    //@ts-ignore
     const walletAddress = data.walletAddress;
 
     const [about, setAbout] = React.useState(false);
@@ -27,6 +31,7 @@ export default function Find() {
         setAbout(false);
     }
 
+    // states for UI elements
     const [drawerOpen, setDrawerOpen] = React.useState(true);
 
     const [backdropOpen, setBackdropOpen] = React.useState(false);
@@ -45,7 +50,7 @@ export default function Find() {
         createdAt: string;
     }
 
-
+        // fetch all available loans
     const getItems = async () => {
         const response = await fetch('http://localhost:3000/api/loan/all', {
             method: 'GET',
@@ -72,6 +77,8 @@ export default function Find() {
         fetchItems();
     }, []);
 
+    // if lender chooses a loan to fund -> send req to backend
+//@ts-ignore
     const fundLoan = async (loanId) => {
         console.log(loanId);
         const response = await fetch(`http://localhost:3000/api/loan/fund/${loanId}`, {
@@ -85,6 +92,8 @@ export default function Find() {
 
         const result = await response.json();
         setBackdropOpen(true);
+
+        // set an alert for success/fail
         if (response.ok){
             setAlertMessage(result.message || 'Loan funded!');
             setSuccess(true);
@@ -102,6 +111,7 @@ export default function Find() {
     };
 
 
+
     const toggleDrawer = () => {
         if (drawerOpen) {
             setDrawerOpen(false);
@@ -111,6 +121,7 @@ export default function Find() {
         }
     }
 
+    // card style
     const Card = styled(MuiCard)(({ theme }) => ({
         display: 'flex',
         flexDirection: 'column',
@@ -130,6 +141,7 @@ export default function Find() {
         }),
         height: '100%',
     }));
+    // @ts-ignore
     return (
         <Box sx={{ display: 'flex' }}>
             <SideMenu
@@ -150,6 +162,7 @@ export default function Find() {
 
                 <Grid container spacing={2} sx={{ p: 2 }}>
                     {items.filter(item => item.lender === null).map(item => (
+                        //@ts-ignore
                         <Grid item xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex', flexDirection: 'column' }}>
                             <Card variant="outlined">
                                 <Typography variant="h6">

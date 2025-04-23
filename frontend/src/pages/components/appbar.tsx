@@ -13,6 +13,7 @@ interface AppBarProps {
     email: string;
 }
 
+// top app bar... includes button to close drawer, and profile button
 export default function MenuAppBar({toggleDrawer, open, name, email}: AppBarProps) {
 
 

@@ -3,8 +3,6 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import {jwtDecode} from "jwt-decode";
@@ -27,12 +25,17 @@ export default function Dashboard() {
 
     // decode data
     const token = localStorage.getItem('token');
+    //@ts-ignore
     const data = jwtDecode(token);
 
     // user info
+    //@ts-ignore
     const id = data.id;
+    //@ts-ignore
     const name = data.name;
+    //@ts-ignore
     const email = data.email;
+    //@ts-ignore
     const walletAddress = data.walletAddress;
 
     const [about, setAbout] = React.useState(false);
@@ -68,6 +71,7 @@ export default function Dashboard() {
     }
 
 
+    // get loans for user
     const getItems = async () => {
         const response = await fetch('http://localhost:3000/api/loan/mine', {
             method: 'GET',
@@ -77,10 +81,10 @@ export default function Dashboard() {
 
         const res = await response.json();
         const items = res;
-        console.log(items);
         return items;
     }
 
+    //@ts-ignore
     const [items, setItems] = React.useState<Item[]>([]);
     const [borrowItems, setBorrowItems] = React.useState<Item[]>([]);
     const [lendItems, setLendItems] = React.useState<Item[]>([]);
@@ -100,6 +104,8 @@ export default function Dashboard() {
     const [backdropOpen, setBackdropOpen] = React.useState(false);
     const [selectedLoan, setSelectedLoan] = React.useState<Item | null>(null);
 
+    // open backdrop if loan is clicked
+//@ts-ignore
     const handleBackdrop = (loan) => {
         setSelectedLoan(loan);
         setBackdropOpen(true);
@@ -111,6 +117,7 @@ export default function Dashboard() {
     const [success, setSuccess] = React.useState(false);
     const [successMessage, setSuccessMessage] = React.useState("");
 
+    // handle repayment
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         if (!(event.currentTarget instanceof HTMLFormElement)) return;
         event.preventDefault();
@@ -125,6 +132,8 @@ export default function Dashboard() {
             return;
         }
 
+        // send req to partially repay loan
+//@ts-ignore
         const response = await fetch(`http://localhost:3000/api/loan/repay/partial/${selectedLoan._id}`, {
             method: 'POST',
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
@@ -303,6 +312,7 @@ export default function Dashboard() {
                   {selectedLoan && (
                     <Card
                         component="form"
+                        //@ts-ignore
                         onSubmit={handleSubmit}
                         noValidate
                         variant="outlined"

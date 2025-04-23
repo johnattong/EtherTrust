@@ -14,6 +14,7 @@ interface Props {
     close: () => void;
 }
 
+//backdrop where user can change password
 export default function changePassword({open, close}: Props) {
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
@@ -145,6 +146,7 @@ export default function changePassword({open, close}: Props) {
         >
             <Card
                 component="form"
+                //@ts-ignore
                 onSubmit={handleSubmit}
                 noValidate
                 variant="outlined"

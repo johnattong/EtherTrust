@@ -17,12 +17,17 @@ export default function Create() {
 
     // decode data
     const token = localStorage.getItem('token');
+    //@ts-ignore
     const data = jwtDecode(token);
 
     // user info
+    //@ts-ignore
     const id = data.id;
+    //@ts-ignore
     const name = data.name;
+    //@ts-ignore
     const email = data.email;
+    //@ts-ignore
     const walletAddress = data.walletAddress;
 
     const [about, setAbout] = React.useState(false);

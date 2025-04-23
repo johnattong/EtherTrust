@@ -2,6 +2,7 @@
 // https://mui.com/material-ui/getting-started/templates/dashboard/
 
 
+
 import { createTheme, alpha, PaletteMode, Shadows } from '@mui/material/styles';
 
 declare module '@mui/material/Paper' {
@@ -9,6 +10,7 @@ declare module '@mui/material/Paper' {
         highlighted: true;
     }
 }
+// @ts-ignore
 declare module '@mui/material/styles/createPalette' {
     interface ColorRange {
         50: string;

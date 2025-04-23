@@ -30,7 +30,7 @@ interface SideMenuProps {
 }
 
 
-
+// side drawer
 export default function SideMenu({open, onAboutClick}: SideMenuProps) {
 
     const secondaryItems = [
