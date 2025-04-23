@@ -60,29 +60,6 @@ JWT_SECRET=your_jwt_secret
 
 ---
 
-## 📂 Project Structure (Suggested)
-
-```
-ethertrust/
-├── backend/
-│   ├── routes/
-│   ├── models/
-│   ├── controllers/
-│   ├── config/
-│   └── server.js
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   └── main.jsx
-├── smart_contract/
-│   └── EtherTrust.sol
-├── README.md
-└── .env (not committed)
-```
-
----
-
 ## ⚙️ Technologies Used
 
 ### 🧩 Backend
@@ -108,38 +85,6 @@ ethertrust/
 - Ethers.js
 - Alchemy
 - Sepolia Ethereum Testnet
-
----
-
-## 📊 Sprint 1 – Completed Tasks
-
-- ✅ Set up MongoDB schemas for `users` and `loans`
-- ✅ Implemented secure user registration and login
-- ✅ JWT token generation and verification
-- ✅ Created protected backend API routes
-- ✅ Initialized Solidity smart contract
-- ✅ Deployed to Sepolia using Alchemy & Ethers.js
-
-### 🧪 Testing (Sprint 1)
-
-- 🧪 Bash script to test backend route validity & input errors
-- 🧪 Manual testing for frontend (due to simplicity)
-- 🧪 Most validation handled server-side
-
----
-
-## 🔜 Sprint 2 Backlog (Planned)
-
-| Task | Points |
-|------|--------|
-| Advance smart contract implementation | 8 |
-| Implement identity verification to prevent fraud | 8 |
-| Finish backend loan management | 2 |
-| Finish user dashboard for lenders and borrowers | 5 |
-| Final testing and optimization | 8 |
-
-📈 **Sprint 2 Velocity:** 31  
-⚡ **Sprint 2 Capacity:** 40
 
 ---
 
