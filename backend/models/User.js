@@ -1,5 +1,5 @@
-require('dotenv').config({ path: '../../.env' });
-const db = require('../../server');
+require('dotenv').config({ path: '../.env' });
+const db = require('../server');
 const bcrypt = require('bcryptjs');
 
 
